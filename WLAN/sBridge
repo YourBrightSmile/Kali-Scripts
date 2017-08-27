@@ -1,0 +1,18 @@
+#!/bin/bash
+if [ "$#" -ne 5 ];then
+	echo "Please use ./sBridge bridgeName ethName atName ip gw"
+	exit 0
+fi
+br0=$1
+eth0=$2
+at0=$3
+ip=$4
+gw=$5
+brctl addbr $br0
+brctl addif $br0 $at0
+brctl addif $br0 $eth0
+ifconfig $eth0 0.0.0.0 up
+ifconfig $at0 0.0.0.0 up
+ifconfig $br0 $ip up
+route add -net 0.0.0.0 netmask 0.0.0.0 gw $gw
+echo 1 > /proc/sys/net/ipv4/ip_forward
